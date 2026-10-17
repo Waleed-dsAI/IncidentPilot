@@ -3,6 +3,7 @@
 :root{font-family:Inter,system-ui,sans-serif;color:#e7ecf5;background:#0c1424}*{box-sizing:border-box}body{max-width:1120px;margin:0 auto;padding:28px}h1{font-size:2rem;margin:0}p,.muted{color:#9cabc2}header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:26px}.brand{color:#64cbd4}a{color:#81d9ed}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:#162338;border:1px solid #2e405a;border-radius:14px;padding:20px}input,textarea,select{width:100%;padding:11px;border:1px solid #40536b;background:#101d30;border-radius:8px;color:white;margin:8px 0 14px}textarea{min-height:110px}label{font-size:.88rem;color:#c1cee0}button{background:#46c0c4;border:0;border-radius:9px;color:#091c24;padding:11px 15px;font-weight:700;cursor:pointer;margin:3px 6px 3px 0}button.secondary{background:#35465c;color:#e7ecf5}button.danger{background:#eaa5a5}.incident{padding:14px 0;border-top:1px solid #32435d}.incident h3{margin:0 0 6px}.tag{font-size:.72rem;border-radius:20px;padding:4px 8px;background:#30435a;display:inline-block;margin-right:5px}small{color:#93a5bc}.notice{padding:12px;border-radius:8px;background:#23364c;margin-top:12px;white-space:pre-wrap}.warning{color:#ffd69a}@media(max-width:750px){.grid{grid-template-columns:1fr}body{padding:16px}header{display:block}}
 
 :root{scroll-behavior:smooth}body{max-width:1200px;background:radial-gradient(ellipse 780px 360px at 100% -120px,#193c55 0%,transparent 70%),#0c1424}header{padding:16px 0 8px}.hero-accent{color:#64cbd4}.hero-tag{max-width:250px;line-height:1.7;text-align:center}.jump-nav{display:flex;gap:9px;flex-wrap:wrap;margin:8px 0 20px}.jump-nav a{color:#d3e9f5;background:#1a2c43;border:1px solid #314b62;padding:10px 14px;border-radius:10px;text-decoration:none;font-size:.88rem}.jump-nav a:hover,.jump-nav a:focus-visible{background:#295069;outline:2px solid #64cbd4}.overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 18px}.overview>div{border:1px solid #37516d;border-radius:12px;background:#16273d;padding:16px;min-height:92px}.overview b,.overview small{display:block}.overview b{font-size:.94rem;color:#e8f5ff;margin-bottom:8px}.overview small{font-size:.8rem;line-height:1.5}.scope-note{border-left:3px solid #e5b876;background:#332c2b;padding:14px 16px;color:#f2debc;border-radius:6px;margin-bottom:22px;line-height:1.6}.panel{box-shadow:0 9px 28px rgba(0,0,0,.10)}.panel h2{margin-top:0}button:hover{filter:brightness(1.08)}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #76dce0;outline-offset:2px}#gmail{border-color:#366775}#windows{border-color:#415b6b}#agent{border-color:#45548c}.notice{overflow-wrap:anywhere}@media(max-width:850px){.overview{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.overview{grid-template-columns:1fr}header{display:block}.jump-nav a{flex:1 1 40%;text-align:center}body{padding:14px}}
+.investigation-report{display:grid;gap:14px;margin-top:14px}.report-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.report-card{background:#101e30;border:1px solid #3a526c;border-radius:12px;padding:15px}.report-card h3{margin:0 0 10px;color:#bdebf1;font-size:1rem}.report-card p{margin:7px 0;line-height:1.6}.report-card ul{margin:8px 0;padding-left:23px;color:#cddbed}.report-card li{margin:5px 0;line-height:1.45}.report-card .minor{font-size:.8rem;color:#adc0d2}.assessment-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.assessment-row strong{display:block;font-size:1.12rem;margin-top:6px}.risk-unknown{color:#ffd18a}.risk-high{color:#ff9999}.risk-low{color:#92e1b7}.tech-details summary{cursor:pointer;color:#9ddceb}.tech-details pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow:auto;font-size:.78rem}.processing-msg{color:#a7dcf1}.report-note{border-left:3px solid #e7b46d;padding:8px 12px;background:#322e2c}.report-card button{margin-top:8px}@media(max-width:620px){.assessment-row{grid-template-columns:1fr}}
 </style></head><body><header><div><div class="brand">● AGENTIKA 2.0 · SECURITY OPERATIONS</div><h1>IncidentPilot <span class="hero-accent">Security Guardian</span></h1><p>One response workspace for phishing emails, GitHub threats and Windows security signals.</p><p class="muted">Investigate with agents · Review evidence · Authorize exact actions · Verify outcomes</p></div><div class="tag hero-tag">v4 · Multi-platform prototype · Human-controlled response</div></header>
 <nav class="jump-nav" aria-label="IncidentPilot sections"><a href="#gmail">Mail protection</a><a href="#github">GitHub containment</a><a href="#agent">Agent investigations</a><a href="#windows">Windows signals</a><a href="#reports">Incident reports</a></nav>
 <section class="overview" aria-label="Supported capabilities"><div><b>Gmail phishing</b><small>3 LLM agents · Approved move to Trash</small></div><div><b>GitHub Actions</b><small>Inspect · Approve · Cancel test run</small></div><div><b>Windows signals</b><small>Opt-in read-only Defender snapshot</small></div><div><b>Human approval</b><small>Explicit review and traceable outcomes</small></div></section>
@@ -60,7 +61,7 @@ async function investigate(run_id){
 async function loadContainments(){
  let r=await fetch('/api/github/containments',{headers:adminHeaders()});let d=await r.json();
  if(!r.ok){el('containments').textContent=d.detail||'Failed';return}
- el('containments').innerHTML=d.length?d.map(c=>`<article class="incident"><h3>#${c.incident_id} — ${safe(c.workflow_name)}</h3><span class="tag">${safe(c.action_status)}</span><p>Repository: <b>${safe(c.repo)}</b> · Run: <b>${c.run_id}</b> · observed: ${safe(c.observed_status)}</p><a href="${safe(c.run_url)}" target="_blank" rel="noopener">Inspect source run</a><p>${safe(c.result_detail)}</p>${c.action_status==='PENDING_REVIEW'?`<label>Reason for decision (required)</label><input id="contain-note-${c.incident_id}" placeholder="Why is containment justified?"/><button onclick="decideContainment(${c.incident_id},'approve',${c.run_id},'${safe(c.repo)}')">Approve cancellation</button><button class="danger" onclick="decideContainment(${c.incident_id},'reject',${c.run_id},'${safe(c.repo)}')">Reject</button>`:''}${c.action_status==='CANCELLATION_REQUESTED'?`<button onclick="verifyContainment(${c.incident_id})">Check GitHub status</button>`:''}</article>`).join(''):'No containment investigations yet';
+ el('containments').innerHTML=d.length?d.map(c=>`<article class="incident"><h3>#${c.incident_id} — ${safe(c.workflow_name)}</h3><span class="tag">${safe(c.action_status)}</span><p>Repository: <b>${safe(c.repo)}</b> · Run: <b>${c.run_id}</b> · observed: ${safe(c.observed_status)}</p><a href="${safe(c.run_url)}" target="_blank" rel="noopener">Inspect source run</a><p>${safe(c.result_detail)}</p>${c.action_status==='PENDING_REVIEW'?`<label>Reason for decision (required)</label><input id="contain-note-${c.incident_id}" placeholder="Why is containment justified?"/><button data-repo="${safe(c.repo)}" onclick="decideContainment(${c.incident_id},'approve',${c.run_id},this.dataset.repo)">Approve cancellation</button><button class="danger" data-repo="${safe(c.repo)}" onclick="decideContainment(${c.incident_id},'reject',${c.run_id},this.dataset.repo)">Reject</button>`:''}${c.action_status==='CANCELLATION_REQUESTED'?`<button onclick="verifyContainment(${c.incident_id})">Check GitHub status</button>`:''}</article>`).join(''):'No containment investigations yet';
 }
 async function decideContainment(id,decision,run_id,repo){
  const note=el('contain-note-'+id)?.value.trim();if(!note || note.length<5){alert('Write a clear reviewer reason.');return}
@@ -78,14 +79,14 @@ async function runAgentTeam(){
  try {
  const r=await fetch(`/api/agent/investigate/${id}`,{method:'POST',headers:adminHeaders()});
  const data=await r.json();
- el('agent-output').textContent=r.ok?JSON.stringify(data,null,2):`AI not completed: ${data.detail||r.status}`;
+ if(r.ok)showInvestigation('agent-output',data,'Incident #'+id+' — AI team report');else result('agent-output',`AI not completed: ${data.detail||r.status}`);
  } catch(e){el('agent-output').textContent='Connection error: '+e.message}
 }
 async function loadAgentReports(){
  const id=Number(el('ai-incident-id').value);
  if(!Number.isSafeInteger(id)||id<1){alert('Provide a valid incident ID');return}
  const r=await fetch(`/api/agent/reports/${id}`,{headers:adminHeaders()}); const data=await r.json();
- el('agent-output').textContent=JSON.stringify(data,null,2);
+ showInvestigation('agent-output',data,'Incident #'+id+' — agent history');
 }
 el('refresh').onclick=()=>{fetchQueue();loadContainments();};
 </script>
@@ -113,6 +114,31 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(mail&&reports)reports.before(mail);
 });
 const gh = () => ({'X-Admin-Token':el('token').value});
+// Present agent reasoning as reviewer-friendly evidence, never as executable HTML.
+function showInvestigation(targetId, payload, label='Security investigation'){
+ const target=el(targetId);target.replaceChildren();
+ const data=payload?.report && typeof payload.report==='object'?payload.report:payload;
+ if(!data || typeof data!=='object'){target.textContent=String(data??'No report returned');return}
+ if(data.detail || data.error){target.textContent='Investigation error: '+String(data.detail||data.error);return}
+ const root=document.createElement('div');root.className='investigation-report';
+ const add=(parent,tag,text,cls='')=>{const x=document.createElement(tag);if(cls)x.className=cls;x.textContent=String(text??'');parent.append(x);return x};
+ const section=(heading)=>{const c=document.createElement('section');c.className='report-card';add(c,'h3',heading);root.append(c);return c};
+ const title=document.createElement('div');title.className='report-head';add(title,'strong',label);add(title,'span','AI assessment · Human review required','tag');root.append(title);
+ const analyst=data.analyst||data.evidence_analyst||{};
+ const planner=data.planner||data.response_planner||{};
+ const investigator=data.investigator||{};
+ const overview=document.createElement('div');overview.className='assessment-row';
+ const riskbox=document.createElement('div');riskbox.className='report-card';add(riskbox,'div','RISK ASSESSMENT','minor');const risk=String(analyst.risk||data.risk||'Not determined');add(riskbox,'strong',risk,(/high|critical/i.test(risk)?'risk-high':/low/i.test(risk)?'risk-low':'risk-unknown'));overview.append(riskbox);
+ const actionbox=document.createElement('div');actionbox.className='report-card';add(actionbox,'div','AGENT RECOMMENDATION','minor');add(actionbox,'strong',String(planner.recommended_action||data.recommended_action||'Review needed').replaceAll('_',' '));overview.append(actionbox);root.append(overview);
+ const putValues=(parent,name,value)=>{if(value===undefined||value===null||value==='')return;add(parent,'strong',name);if(Array.isArray(value)){if(!value.length){add(parent,'p','None reported');return}const ul=document.createElement('ul');value.slice(0,12).forEach(v=>add(ul,'li',typeof v==='string'?v:JSON.stringify(v)));parent.append(ul)}else if(typeof value==='object'){add(parent,'p',JSON.stringify(value))}else add(parent,'p',value)};
+ const inv=section('01 · Investigator — Observations');putValues(inv,'Summary',investigator.summary);putValues(inv,'Indicators',investigator.indicators);putValues(inv,'Counterindicators',investigator.counterindicators);putValues(inv,'Missing evidence',investigator.missing_evidence);
+ const ana=section('02 · Evidence Analyst — Risk and uncertainty');putValues(ana,'Rationale',analyst.rationale);putValues(ana,'Uncertainties',analyst.uncertainties);putValues(ana,'Findings',analyst.findings);
+ const plan=section('03 · Response Planner — Next steps');putValues(plan,'Reason',planner.reason);putValues(plan,'Verification steps',planner.verification_steps);putValues(plan,'Human review required',planner.human_review_required===undefined?true:planner.human_review_required);
+ const footer=section('Human decision');add(footer,'p','The agents recommend an action but have NOT executed it. Review evidence and approve or reject the specific case using the controls above.','report-note');
+ const tools=data.mcp_tools_used||data.tools_used;if(tools)putValues(footer,'MCP tools used',tools);
+ const details=document.createElement('details');details.className='tech-details';add(details,'summary','Technical details (raw JSON)');add(details,'pre',JSON.stringify(payload,null,2));root.append(details);
+ target.append(root);
+}
 const result = (id,obj) => {el(id).textContent=typeof obj==='string'?obj:JSON.stringify(obj,null,2)};
 async function gmailAccounts(){
  let r=await fetch('/api/gmail/accounts',{headers:gh()}),d=await r.json();
@@ -158,8 +184,12 @@ async function gmailCases(){
   let ai=document.createElement('button');ai.textContent='Run 3 AI agents';
   ai.onclick=async()=>{
    result('gmail-output','Running three agents with scoped MCP evidence...');
-   let rr=await fetch('/api/gmail/cases/'+c.incident_id+'/investigate',{method:'POST',headers:gh()});
-   result('gmail-output',await rr.json());
+   try{
+    let rr=await fetch('/api/gmail/cases/'+c.incident_id+'/investigate',{method:'POST',headers:gh()});
+    let data=await rr.json();
+    if(rr.ok)showInvestigation('gmail-output',data,'Case #'+c.incident_id+' — phishing assessment');
+    else result('gmail-output',data.detail||'Investigation failed');
+   }catch(err){result('gmail-output','Investigation connection error: '+err.message)}
   };
   box.append(heading,p,snippet,document.createElement('br'),ai);
   if(c.action_status==='PENDING_REVIEW'){
@@ -189,8 +219,6 @@ el('windows-submit').onclick=async()=>{
  }catch(e){result('windows-output','Invalid JSON: '+e.message)}
 };
 </script>
-</body></html>
-
 <script>
 (function(){
 const byId=id=>document.getElementById(id);
@@ -252,3 +280,4 @@ byId('settings-gmail-status').onclick=async()=>{
 };
 })();
 </script>
+</body></html>
