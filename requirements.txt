@@ -1,0 +1,7 @@
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+httpx>=0.27,<1
+pydantic>=2,<3
+# Tests (install separately: pip install pytest pytest-asyncio)
+cryptography>=42,<47
+PyJWT[crypto]>=2.8,<3

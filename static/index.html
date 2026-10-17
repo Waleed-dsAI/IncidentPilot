@@ -1,0 +1,254 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IncidentPilot Security Guardian | Agentika 2.0</title>
+<style>
+:root{font-family:Inter,system-ui,sans-serif;color:#e7ecf5;background:#0c1424}*{box-sizing:border-box}body{max-width:1120px;margin:0 auto;padding:28px}h1{font-size:2rem;margin:0}p,.muted{color:#9cabc2}header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:26px}.brand{color:#64cbd4}a{color:#81d9ed}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:#162338;border:1px solid #2e405a;border-radius:14px;padding:20px}input,textarea,select{width:100%;padding:11px;border:1px solid #40536b;background:#101d30;border-radius:8px;color:white;margin:8px 0 14px}textarea{min-height:110px}label{font-size:.88rem;color:#c1cee0}button{background:#46c0c4;border:0;border-radius:9px;color:#091c24;padding:11px 15px;font-weight:700;cursor:pointer;margin:3px 6px 3px 0}button.secondary{background:#35465c;color:#e7ecf5}button.danger{background:#eaa5a5}.incident{padding:14px 0;border-top:1px solid #32435d}.incident h3{margin:0 0 6px}.tag{font-size:.72rem;border-radius:20px;padding:4px 8px;background:#30435a;display:inline-block;margin-right:5px}small{color:#93a5bc}.notice{padding:12px;border-radius:8px;background:#23364c;margin-top:12px;white-space:pre-wrap}.warning{color:#ffd69a}@media(max-width:750px){.grid{grid-template-columns:1fr}body{padding:16px}header{display:block}}
+
+:root{scroll-behavior:smooth}body{max-width:1200px;background:radial-gradient(ellipse 780px 360px at 100% -120px,#193c55 0%,transparent 70%),#0c1424}header{padding:16px 0 8px}.hero-accent{color:#64cbd4}.hero-tag{max-width:250px;line-height:1.7;text-align:center}.jump-nav{display:flex;gap:9px;flex-wrap:wrap;margin:8px 0 20px}.jump-nav a{color:#d3e9f5;background:#1a2c43;border:1px solid #314b62;padding:10px 14px;border-radius:10px;text-decoration:none;font-size:.88rem}.jump-nav a:hover,.jump-nav a:focus-visible{background:#295069;outline:2px solid #64cbd4}.overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 18px}.overview>div{border:1px solid #37516d;border-radius:12px;background:#16273d;padding:16px;min-height:92px}.overview b,.overview small{display:block}.overview b{font-size:.94rem;color:#e8f5ff;margin-bottom:8px}.overview small{font-size:.8rem;line-height:1.5}.scope-note{border-left:3px solid #e5b876;background:#332c2b;padding:14px 16px;color:#f2debc;border-radius:6px;margin-bottom:22px;line-height:1.6}.panel{box-shadow:0 9px 28px rgba(0,0,0,.10)}.panel h2{margin-top:0}button:hover{filter:brightness(1.08)}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #76dce0;outline-offset:2px}#gmail{border-color:#366775}#windows{border-color:#415b6b}#agent{border-color:#45548c}.notice{overflow-wrap:anywhere}@media(max-width:850px){.overview{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.overview{grid-template-columns:1fr}header{display:block}.jump-nav a{flex:1 1 40%;text-align:center}body{padding:14px}}
+</style></head><body><header><div><div class="brand">● AGENTIKA 2.0 · SECURITY OPERATIONS</div><h1>IncidentPilot <span class="hero-accent">Security Guardian</span></h1><p>One response workspace for phishing emails, GitHub threats and Windows security signals.</p><p class="muted">Investigate with agents · Review evidence · Authorize exact actions · Verify outcomes</p></div><div class="tag hero-tag">v4 · Multi-platform prototype · Human-controlled response</div></header>
+<nav class="jump-nav" aria-label="IncidentPilot sections"><a href="#gmail">Mail protection</a><a href="#github">GitHub containment</a><a href="#agent">Agent investigations</a><a href="#windows">Windows signals</a><a href="#reports">Incident reports</a></nav>
+<section class="overview" aria-label="Supported capabilities"><div><b>Gmail phishing</b><small>3 LLM agents · Approved move to Trash</small></div><div><b>GitHub Actions</b><small>Inspect · Approve · Cancel test run</small></div><div><b>Windows signals</b><small>Opt-in read-only Defender snapshot</small></div><div><b>Human approval</b><small>Explicit review and traceable outcomes</small></div></section>
+<p class="scope-note"><b>Prototype status:</b> External integrations require credentials and live verification. Windows monitoring is read-only. This application is not an antivirus engine and does not autonomously stop phishing or ransomware.</p>
+<div class="grid" id="reports"><section class="panel" id="integrations" style="margin:20px 0">
+<h2>Settings · Connected services <span class="tag">Administrator setup</span></h2>
+<p>Connect supported services using their authorization pages. End users never edit source code or paste personal access tokens. This hackathon build uses a single administrator workspace, not separate user accounts.</p>
+<div class="grid"><div>
+<h3>GitHub App</h3><div id="github-connection" class="notice">Load connection status to begin.</div>
+<button id="github-app-connect">Connect GitHub</button><button class="secondary" id="github-app-status">Refresh connection</button>
+<label for="github-app-repos">Authorized repositories</label><select id="github-app-repos"></select>
+<button id="github-app-save">Use selected repository</button><button class="danger" id="github-app-disconnect">Disconnect GitHub locally</button>
+<div id="github-app-result" class="notice">Permissions are granted on GitHub. To fully revoke access, uninstall the app in GitHub settings.</div>
+</div><div>
+<h3>Gmail</h3><p>Authorize through Google OAuth using Connect Gmail in the phishing section. Administrator credentials are not exposed here.</p>
+<button class="secondary" id="settings-gmail-status">Show connected Gmail accounts</button>
+<div id="settings-gmail-list" class="notice">No account list loaded.</div>
+<p class="muted">Disconnecting removes the locally stored refresh token; revoke the app in Google Account settings to invalidate permissions at Google.</p>
+<h3>Windows</h3><p>Windows monitoring currently uses a read-only, opt-in local collector. Device enrollment is not implemented.</p>
+</div></div></section>
+<section class="panel"><h2>Employee incident report</h2><p>Anyone can submit a security concern. Never include passwords, API keys or other secrets.</p><form id="report"><label>Incident title</label><input id="title" required minlength="5" placeholder="I entered my password on a suspicious site"><label>Incident category</label><select id="kind"><option value="phishing">Phishing</option><option value="credentials">Exposed credentials</option><option value="suspicious_login">Suspicious login</option><option value="malware">Malware alert</option><option value="lost_device">Lost device</option><option value="other">Other</option></select><label>Description</label><textarea id="description" required minlength="12" placeholder="Describe what happened, what is known and when it occurred"></textarea><button type="submit">Submit incident</button></form><div id="submit-result"></div></section>
+<section class="panel"><h2>Administrator review</h2><p>Administrator token is only held in this browser tab for requests. Use HTTPS. The demo has no user accounts.</p><label>Administrator token</label><input id="token" type="password" autocomplete="off" placeholder="ADMIN_TOKEN configured on server"><button id="refresh">Load incident queue</button><div id="queue"></div></section></div>
+
+<section class="panel" id="github" style="margin-top:22px">
+<h2>GitHub Actions containment <span class="tag">Real API action</span></h2>
+<p>Test repository only. A running workflow is <strong>not</strong> proof of malicious activity. Review the actual workflow and authorization before approving cancellation.</p>
+<button onclick="loadRuns()">Load GitHub runs</button><div id="runs"></div>
+<h3>Approval queue</h3><button class="secondary" onclick="loadContainments()">Refresh containment queue</button><div id="containments"></div>
+</section>
+<section class="panel" id="agent" style="margin-top:22px">
+<h2>Security investigation agents <span class="tag">LLM + read-only local MCP</span></h2>
+<p>Investigator retrieves source evidence using MCP, Evidence Analyst assesses uncertainty, and Response Planner proposes a human-reviewed response. AI never cancels a run.</p>
+<label>Incident ID (create one in GitHub investigation above or employee form)</label>
+<input id="ai-incident-id" type="number" min="1" placeholder="e.g. 1" />
+<button onclick="runAgentTeam()">Run agent investigation</button>
+<button class="secondary" onclick="loadAgentReports()">Load agent history</button>
+<div id="agent-output" class="notice">Requires GROQ_API_KEY. If no model key is configured, investigation will fail rather than report simulated AI findings.</div>
+</section>
+<script>
+const el=id=>document.getElementById(id);const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+el('report').onsubmit=async e=>{e.preventDefault();const payload={title:el('title').value,kind:el('kind').value,description:el('description').value};const r=await fetch('/api/incidents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const d=await r.json();el('submit-result').textContent=r.ok?`Incident #${d.id} submitted. Awaiting administrator review.`:JSON.stringify(d);if(r.ok)el('report').reset()};
+async function fetchQueue(){let r=await fetch('/api/incidents',{headers:{'X-Admin-Token':el('token').value}});let d=await r.json();if(!r.ok){el('queue').textContent=d.detail||'Cannot load queue';return}el('queue').innerHTML=d.length?d.map(x=>`<article class="incident"><h3>#${x.id} ${safe(x.title)}</h3><span class="tag">${safe(x.kind)}</span><span class="tag">${safe(x.priority)}</span><span class="tag">${safe(x.status)}</span><p>${safe(x.description)}</p><small><b>Assessment:</b> ${safe(x.rationale)}<br><b>Proposed:</b> ${safe(x.recommendation)}</small><div>${x.status==='PENDING_REVIEW'?`<label>Reviewer note</label><input id="note-${x.id}" placeholder="State justification"/><button onclick="review(${x.id},'approve')">Approve follow-up ticket</button><button class="secondary" onclick="review(${x.id},'investigate')">Request research</button><button class="danger" onclick="review(${x.id},'reject')">Reject</button>`:''}<button class="secondary" onclick="showAudit(${x.id})">Audit log</button><div id="audit-${x.id}"></div></div></article>`).join(''):'No incidents found';}
+async function review(id,decision){const note=el('note-'+id)?.value.trim();if(!note){alert('Please write a reviewer reason.');return}let r=await fetch(`/api/incidents/${id}/review`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Token':el('token').value},body:JSON.stringify({decision,note,reviewer:'IT Administrator'})});let d=await r.json();if(!r.ok)alert(d.detail||'Review failed');else alert(`Status: ${d.status}\nExecution: ${d.execution}\n${d.details||''}`);fetchQueue();}
+async function showAudit(id){let r=await fetch(`/api/incidents/${id}/audit`,{headers:{'X-Admin-Token':el('token').value}});let d=await r.json();el('audit-'+id).innerHTML=r.ok?`<div class="notice">${d.map(a=>`${safe(a.at)} — ${safe(a.event)} (${safe(a.actor)}) — ${safe(a.details)}`).join('<hr>')}</div>`:safe(d.detail||'Failed');}
+
+const adminHeaders=()=>({'X-Admin-Token':el('token').value});
+async function loadRuns(){
+ let r=await fetch('/api/github/runs',{headers:adminHeaders()});let d=await r.json();
+ el('runs').innerHTML=r.ok?(d.length?d.map(x=>`<div class="incident"><b>${safe(x.name)}</b> <span class="tag">${safe(x.status)}</span> ${safe(x.conclusion||'')}<br><small>Run #${x.id}</small> <a href="${safe(x.url)}" target="_blank" rel="noopener">View on GitHub</a><br><button onclick="investigate(${x.id})">Investigate this run</button></div>`).join(''):'No runs found'):`<div class="notice">${safe(d.detail||'Could not load runs')}</div>`;
+}
+async function investigate(run_id){
+ let r=await fetch('/api/github/investigate',{method:'POST',headers:{...adminHeaders(),'Content-Type':'application/json'},body:JSON.stringify({run_id})});let d=await r.json();
+ if(!r.ok){alert(d.detail||'Failed');return}alert(`Incident #${d.id} opened. Human review required.`);loadContainments();fetchQueue();
+}
+async function loadContainments(){
+ let r=await fetch('/api/github/containments',{headers:adminHeaders()});let d=await r.json();
+ if(!r.ok){el('containments').textContent=d.detail||'Failed';return}
+ el('containments').innerHTML=d.length?d.map(c=>`<article class="incident"><h3>#${c.incident_id} — ${safe(c.workflow_name)}</h3><span class="tag">${safe(c.action_status)}</span><p>Repository: <b>${safe(c.repo)}</b> · Run: <b>${c.run_id}</b> · observed: ${safe(c.observed_status)}</p><a href="${safe(c.run_url)}" target="_blank" rel="noopener">Inspect source run</a><p>${safe(c.result_detail)}</p>${c.action_status==='PENDING_REVIEW'?`<label>Reason for decision (required)</label><input id="contain-note-${c.incident_id}" placeholder="Why is containment justified?"/><button onclick="decideContainment(${c.incident_id},'approve',${c.run_id},'${safe(c.repo)}')">Approve cancellation</button><button class="danger" onclick="decideContainment(${c.incident_id},'reject',${c.run_id},'${safe(c.repo)}')">Reject</button>`:''}${c.action_status==='CANCELLATION_REQUESTED'?`<button onclick="verifyContainment(${c.incident_id})">Check GitHub status</button>`:''}</article>`).join(''):'No containment investigations yet';
+}
+async function decideContainment(id,decision,run_id,repo){
+ const note=el('contain-note-'+id)?.value.trim();if(!note || note.length<5){alert('Write a clear reviewer reason.');return}
+ if(decision==='approve'&&!confirm(`Cancel GitHub Actions run #${run_id} in ${repo}? This will stop a live job.`))return;
+ let r=await fetch(`/api/github/containments/${id}/review`,{method:'POST',headers:{...adminHeaders(),'Content-Type':'application/json'},body:JSON.stringify({decision,note,confirm_repo:repo,confirm_run_id:run_id})});let d=await r.json();alert(r.ok?`${d.status}: ${d.details||''}`:d.detail||'Review failed');loadContainments();fetchQueue();
+}
+async function verifyContainment(id){
+ let r=await fetch(`/api/github/containments/${id}/verify`,{method:'POST',headers:adminHeaders()});let d=await r.json();alert(d.details||d.detail||'Result unavailable');loadContainments();
+}
+
+async function runAgentTeam(){
+ const id=Number(el('ai-incident-id').value);
+ if(!Number.isSafeInteger(id)||id<1){alert('Provide a valid incident ID');return}
+ el('agent-output').textContent='Running Investigation Agent → Evidence Analyst → Response Planner. Read-only MCP tools may be called...';
+ try {
+ const r=await fetch(`/api/agent/investigate/${id}`,{method:'POST',headers:adminHeaders()});
+ const data=await r.json();
+ el('agent-output').textContent=r.ok?JSON.stringify(data,null,2):`AI not completed: ${data.detail||r.status}`;
+ } catch(e){el('agent-output').textContent='Connection error: '+e.message}
+}
+async function loadAgentReports(){
+ const id=Number(el('ai-incident-id').value);
+ if(!Number.isSafeInteger(id)||id<1){alert('Provide a valid incident ID');return}
+ const r=await fetch(`/api/agent/reports/${id}`,{headers:adminHeaders()}); const data=await r.json();
+ el('agent-output').textContent=JSON.stringify(data,null,2);
+}
+el('refresh').onclick=()=>{fetchQueue();loadContainments();};
+</script>
+<section class="panel" id="gmail" style="margin-top:22px">
+<h2>Gmail phishing response <span class="tag">3 agents + review + action</span></h2>
+<p>Connect a dedicated Gmail test account. Select a suspicious message, run agent-based analysis and explicitly approve moving that exact message to Trash. Nothing is deleted permanently. Selected email metadata and snippets may be sent to your configured LLM provider. You will need to re-enter your administrator token after returning from Google OAuth.</p>
+<button id="gmail-connect">Connect Gmail</button>
+<button class="secondary" id="gmail-refresh">Refresh accounts</button>
+<label>Connected account</label><select id="gmail-account"></select>
+<button id="gmail-load">Load last 12 inbox messages</button><div id="gmail-messages"></div>
+<h3>Phishing review queue</h3><button class="secondary" id="gmail-cases-refresh">Refresh email cases</button><div id="gmail-cases"></div>
+<div id="gmail-output" class="notice">Approve actions only on your own test messages.</div>
+</section>
+<section class="panel" id="windows" style="margin-top:22px">
+<h2>Windows security health <span class="tag">Read-only · Opt-in</span></h2>
+<p>Run <code>python collector/windows_defender.py</code> on your own Windows computer. Review the JSON locally and paste only information you consent to submit. No background service, continuous ransomware detection or process termination is implemented.</p>
+<label>Paste collector JSON (no passwords or private files)</label><textarea id="windows-json" placeholder='{"host_alias":"my-test-laptop","defender_enabled":true,"realtime_enabled":true,"detections":[]}'></textarea>
+<button id="windows-submit">Create Windows security incident</button><div id="windows-output" class="notice"></div>
+</section>
+<script>
+// Group controls by the security problem they solve without changing API bindings.
+window.addEventListener('DOMContentLoaded',()=>{
+  const mail=document.getElementById('gmail');
+  const reports=document.getElementById('reports');
+  if(mail&&reports)reports.before(mail);
+});
+const gh = () => ({'X-Admin-Token':el('token').value});
+const result = (id,obj) => {el(id).textContent=typeof obj==='string'?obj:JSON.stringify(obj,null,2)};
+async function gmailAccounts(){
+ let r=await fetch('/api/gmail/accounts',{headers:gh()}),d=await r.json();
+ if(!r.ok){result('gmail-output',d);return}
+ el('gmail-account').replaceChildren();
+ d.forEach(x=>{let op=document.createElement('option');op.value=x.account_id;op.textContent=x.account_id;el('gmail-account').append(op)});
+ result('gmail-output',d.length?`${d.length} connected Gmail account(s).`:'No Gmail accounts connected.');
+}
+el('gmail-connect').onclick=async()=>{
+ let r=await fetch('/api/gmail/connect',{headers:gh()}),d=await r.json();
+ if(!r.ok){result('gmail-output',d);return}
+ if(!d.url.startsWith('https://accounts.google.com/')){result('gmail-output','Unexpected OAuth URL');return}
+ window.location.assign(d.url);
+};
+el('gmail-refresh').onclick=gmailAccounts;
+el('gmail-load').onclick=async()=>{
+ let account=el('gmail-account').value;
+ if(!account){result('gmail-output','Connect Gmail first');return}
+ let r=await fetch('/api/gmail/messages?account_id='+encodeURIComponent(account),{headers:gh()}),d=await r.json();
+ if(!r.ok){result('gmail-output',d);return}
+ const holder=el('gmail-messages');holder.replaceChildren();
+ for(const m of d){
+  let box=document.createElement('article');box.className='incident';
+  const b=document.createElement('b');b.textContent=m.subject;
+  const p=document.createElement('p');p.textContent='From: '+m.sender+' — '+m.snippet.slice(0,190);
+  const btn=document.createElement('button');btn.textContent='Open investigation';
+  btn.onclick=async()=>{
+   let rr=await fetch('/api/gmail/cases',{method:'POST',headers:{...gh(),'Content-Type':'application/json'},
+     body:JSON.stringify({account_id:account,message_id:m.message_id})});let dd=await rr.json();
+   result('gmail-output',dd);if(rr.ok)gmailCases();
+  };box.append(b,p,btn);holder.append(box);
+ }
+};
+async function gmailCases(){
+ const r=await fetch('/api/gmail/cases',{headers:gh()}),d=await r.json();
+ if(!r.ok){result('gmail-output',d);return}
+ const holder=el('gmail-cases');holder.replaceChildren();
+ for(const c of d){
+  let box=document.createElement('article');box.className='incident';
+  let heading=document.createElement('h3');heading.textContent='#'+c.incident_id+' '+c.subject;
+  let p=document.createElement('p');p.textContent='From '+c.sender+' · '+c.account_id+' · '+c.action_status;
+  let snippet=document.createElement('small');snippet.textContent=c.snippet.slice(0,240);
+  let ai=document.createElement('button');ai.textContent='Run 3 AI agents';
+  ai.onclick=async()=>{
+   result('gmail-output','Running three agents with scoped MCP evidence...');
+   let rr=await fetch('/api/gmail/cases/'+c.incident_id+'/investigate',{method:'POST',headers:gh()});
+   result('gmail-output',await rr.json());
+  };
+  box.append(heading,p,snippet,document.createElement('br'),ai);
+  if(c.action_status==='PENDING_REVIEW'){
+   const note=document.createElement('input');note.placeholder='Administrator reason (minimum 8 characters)';
+   for(const decision of ['approve','reject']){
+    const btn=document.createElement('button');btn.textContent=decision==='approve'?'Approve move to Trash':'Reject';
+    if(decision==='reject')btn.className='danger';
+    btn.onclick=async()=>{
+      if(note.value.trim().length<8){alert('Give a reason of at least 8 characters.');return}
+      if(decision==='approve'&&!confirm('Move EXACT Gmail message '+c.message_id+' to Trash in '+c.account_id+'?'))return;
+      let rr=await fetch('/api/gmail/cases/'+c.incident_id+'/review',{method:'POST',
+      headers:{...gh(),'Content-Type':'application/json'},body:JSON.stringify({decision,confirm_message_id:c.message_id,note:note.value})});
+      result('gmail-output',await rr.json());gmailCases();
+    };box.append(btn);
+   }
+   box.append(note);
+  }
+  holder.append(box);
+ }
+}
+el('gmail-cases-refresh').onclick=gmailCases;
+el('windows-submit').onclick=async()=>{
+ try{
+ const payload=JSON.parse(el('windows-json').value);
+ const r=await fetch('/api/windows/signals',{method:'POST',headers:{...gh(),'Content-Type':'application/json'},body:JSON.stringify(payload)});
+ result('windows-output',await r.json());
+ }catch(e){result('windows-output','Invalid JSON: '+e.message)}
+};
+</script>
+</body></html>
+
+<script>
+(function(){
+const byId=id=>document.getElementById(id);
+const auth=()=>({'X-Admin-Token':byId('token').value});
+async function api(path,options={}){
+ const headers={...auth(),...(options.headers||{})};
+ const resp=await fetch(path,{...options,headers});
+ const data=await resp.json().catch(()=>({detail:'Unable to read response'}));
+ if(!resp.ok)throw new Error(data.detail||`HTTP ${resp.status}`);
+ return data;
+}
+function error(e){byId('github-app-result').textContent=e.message;}
+async function refresh(){
+ try{
+  const status=await api('/api/integrations/github/status');
+  byId('github-connection').textContent=status.connected?`Connected: ${status.account}. Selected: ${status.selected_repo||'none'}`:'GitHub App not connected.';
+  byId('github-app-repos').replaceChildren();
+  if(status.connected){
+   const result=await api('/api/integrations/github/repositories');
+   for(const repo of result.repositories){
+     const opt=document.createElement('option');opt.value=repo;opt.textContent=repo;
+     if(repo===status.selected_repo)opt.selected=true;
+     byId('github-app-repos').append(opt);
+   }
+  }
+ }catch(e){error(e)}
+}
+byId('github-app-connect').onclick=async()=>{
+ try{const d=await api('/api/integrations/github/connect');window.location.assign(d.url)}catch(e){error(e)}
+};
+byId('github-app-status').onclick=refresh;
+byId('github-app-save').onclick=async()=>{
+ const repo=byId('github-app-repos').value;
+ if(!repo){byId('github-app-result').textContent='Select a repository first';return}
+ try{
+ const data=await api('/api/integrations/github/repository',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({repo})});
+ byId('github-app-result').textContent=`Configured ${data.selected_repo}. GitHub Actions tools now use this authorized repository.`;
+ await refresh();
+ }catch(e){error(e)}
+};
+byId('github-app-disconnect').onclick=async()=>{
+ if(!confirm('Disconnect GitHub locally? Existing incident investigations will remain for audit.'))return;
+ try{const result=await api('/api/integrations/github/disconnect',{method:'DELETE'});byId('github-app-result').textContent=result.note;await refresh()}catch(e){error(e)}
+};
+byId('settings-gmail-status').onclick=async()=>{
+ try{
+ const accounts=await api('/api/gmail/accounts');
+ const list=byId('settings-gmail-list');list.replaceChildren();
+ if(!accounts.length){list.textContent='No Gmail account connected.';return}
+ for(const account of accounts){
+  const row=document.createElement('div');row.textContent=account.account_id+' ';
+  const button=document.createElement('button');button.textContent='Disconnect';button.className='danger';
+  button.onclick=async()=>{
+   if(!confirm(`Disconnect ${account.account_id}?`))return;
+   try{await api('/api/integrations/gmail/'+encodeURIComponent(account.account_id),{method:'DELETE'});byId('settings-gmail-status').click()}catch(e){list.textContent=e.message}
+  };row.append(button);list.append(row);
+ }
+ }catch(e){byId('settings-gmail-list').textContent=e.message}
+};
+})();
+</script>

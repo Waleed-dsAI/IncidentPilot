@@ -1,0 +1,10 @@
+name: Harmless containment lab
+on:
+  workflow_dispatch:
+jobs:
+  safe_wait:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Wait to demonstrate approval-gated cancellation
+        run: sleep 360
